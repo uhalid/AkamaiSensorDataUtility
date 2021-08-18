@@ -157,9 +157,12 @@ class SensorDataDecoder:
             a = FormInfo(info)
             self.allFormInfo.append(a)
 
+    def decodeKact(self, string: str):
+            pass
+
     def decode(self):
         roba, resto = self.sensor_data.split('-1,2,-94,-100,')
-        roba = roba.replace(self.ver, '')
+        #! da sistemare roba piu avanti
 
         gd, resto = resto.split('-1,2,-94,-101,')
         self.decodeGD(gd)
@@ -173,14 +176,14 @@ class SensorDataDecoder:
         informinfo, resto = resto.split('-1,2,-94,-102,')
 
         getforminfo, resto = resto.split('-1,2,-94,-108,')
-        kact, resto = resto.split('-1,2,-94,-110,')
-        
-
         self.decodeFormInfo(getforminfo)
 
-        kact = kact.replace(';', '\n')
+        kact, resto = resto.split('-1,2,-94,-110,')
+        self.decodeKact(kact)
+
 
         with open('resto.txt', 'w') as f:
+            kact = kact.replace(';', '\n')
             f.write(kact)
         
 
@@ -212,9 +215,49 @@ class FormInfo:
     def __str__(self):
         return f'FormInfo   type={self.typee} | autocomplete={self.autocomplete} | isRequired={self.isRequired} | sumCharId={self.sumCharId} | sumCharName={self.sumCharName} | f={self.f}'
 
+class KeyboardAction:
+    '''
+        self.cnt counter, indicates how many keys have been pressed so far
+        self.type, the method that logs keyboard action (cka) is called by 3 possibile Events, keyboardDown, keyboardUp, keyboardPress each one has a code respectively 1, 2, 3
+
+        self.specialKeys indicites if shift, ctrl, meta or alt key are pressed, formula =
+        self.sumCharName same thing as FormInfo.sumCharName, bmak.ab is called with the name of input box where the character have been typed and
+
+        Know sumCharName:
+                emailAddress: 1230
+                password: 883
+                pid: 312 
+    '''
+
+    def __init__(self, cnt, typee, _, a, specialKeys, sumCharName):
+        self.cnt = cnt
+        self.typee = typee
+        # s
+        # n
+        self.specialKeys = specialKeys
+        self.sumCharName = sumCharName
+
+        self.whichSpecialKeyArePressed()
+
+    def whichSpecialKeyArePressed(self):
+        # bmak check if special keys are pressed and assign 1 or 0 to variables for each special key
+        # r = e.shiftKey ? 1 : 0 is one exemple for shiftkey, variable name for ctrl, meta and alt are respectively i, c and b
+        # then they calculate a number by multiplying power of 2 by the variables
+        # 8 * shiftkey + 4 * ctrlKey + 2 * metaKey + alt
+
+        binNum = bin(self.specialKeys)
+        binList = [char for char in str(binNum).zfill(4)]
+
+        self.shiftKey = True if binList[0] == '1' else False 
+        self.ctrlKey = True if binList[1] == '1' else False
+        self.metaKey = True if binList[2] == '1' else False
+        self.altKey = True if binList[3] == '1' else False
+    
+    def __str__(self):
+        return f'Keyboard    cnt:{self.cnt} || typee:{self.typee} || specialKeys:{self.specialKeys} || sumCharName:{self.sumCharName} || shift:{self.shiftKey} || ctrl:{self.ctrlKey} || meta:{self.metaKey} || alt:{self.altKey}'
 
 if __name__ == '__main__':
-    with open('sensorData//sensorData_acaso3.txt', 'r') as f:
+    with open('sensorData//sensorData_acaso4.txt', 'r') as f:
         sensor_data = f.read()
     decoder = SensorDataDecoder(sensor_data)
     decoder.decode()
