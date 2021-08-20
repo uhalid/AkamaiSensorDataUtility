@@ -159,24 +159,62 @@ class SensorDataDecoder:
         self.allKeyboardInfo = []
 
         for info in infos:
-            a = KeyboardAction(info)
+            a = KeyboardEvent(info)
             self.allKeyboardInfo.append(a)
             # with open('resto2.txt', 'a+') as f:
             #     f.write(str(a() + '\n')
         
     def decodeMact(self, string: str):
+        if(string == ''):
+            print('Mouse empty')
         infos = string.split(';')[0:-1]
         self.allMouseInfo = []
 
-        with open('resto_mouse.txt', 'w') as f:
-            f.write('')
         for info in infos:
-            with open('resto_mouse.txt', 'a+') as f:
-                m = MouseAction(info)
-                self.allMouseInfo.append(m)
-                # f.write(info.replace(',', '\t\t') + '\n')
-                f.write(str(m) + '\n')
+            m = MouseEvent(info)
+            self.allMouseInfo.append(m)
 
+    def decodeTact(self, string: str):
+        if(string == ''):
+            print('Touch empty, desktop?')
+        infos = string.split(';')[0:-1]
+        self.allTouchInfo = []
+
+
+        for info in infos:
+            m = TouchEvent(info)
+            self.allTouchInfo.append(m)
+
+    def decodeDoact(self, string: str):
+        if(string == ''):
+            print('Device orientation empty, desktop?')
+        infos = string.split(';')[0:-1]
+        self.allDeviceOrientionInfo = []
+
+        for info in infos:
+            m = DeviceOrientationEvent(info)
+            self.allDeviceOrientionInfo.append(m)
+
+    def decodeDmact(self, string: str):
+        if(string == ''):
+            print('Device motion empty, desktop?')
+        infos = string.split(';')[0:-1]
+        self.allDeviceMotionInfo = []
+
+        for info in infos:
+            m = DeviceMotionEvent(info)
+            self.allDeviceMotionInfo.append(m)
+
+    def decodePact(self, string: str):
+        if(string == ''):
+            print('pointer empty')
+        infos = string.split(';')[0:-1]
+        self.allPointerInfo = []
+        for info in infos:
+            m = PointerEvent(info)
+            self.allPointerInfo.append(m)
+            print(m)
+    
     def decode(self):
         roba, resto = self.sensor_data.split('-1,2,-94,-100,')
         #! da sistemare roba piu avanti
@@ -200,6 +238,20 @@ class SensorDataDecoder:
 
         mact, resto = resto.split('-1,2,-94,-117,')
         self.decodeMact(mact)
+
+
+        tact, resto = resto.split('-1,2,-94,-111,')
+        self.decodeTact(tact)
+
+        doact, resto = resto.split('-1,2,-94,-109,')
+        self.decodeDoact(doact)
+
+        dmact, resto = resto.split('-1,2,-94,-114,')
+        self.decodeDmact(dmact)
+
+
+        pact, resto = resto.split('-1,2,-94,-103,')
+        self.decodePact(pact)
 
         with open('resto.txt', 'w') as f:
             kact = kact.replace(';', '\n')
@@ -234,7 +286,7 @@ class FormInfo:
     def __str__(self):
         return f'FormInfo   type={self.typee} | autocomplete={self.autocomplete} | isRequired={self.isRequired} | sumCharId={self.sumCharId} | sumCharName={self.sumCharName} | f={self.f}'
 
-class KeyboardAction:
+class KeyboardEvent:
     '''
         self.cnt counter, indicates how many keys have been pressed so far
         self.type, the method that logs keyboard action (cka) is called by 3 possibile Events, keyboardDown, keyboardUp, keyboardPress each one has a code respectively 1, 2, 3
@@ -283,7 +335,7 @@ class KeyboardAction:
         return f'Keyboard    isT:{self.isTrusted}|| cnt:{self.cnt} || typee:{self.typee} || time:{self.time} || n:{self.n} || l:{self.l} || specialKeys:{self.specialKeys} || sumChar:{self.sumChar} || shift:{self.shiftKey} || ctrl:{self.ctrlKey} || meta:{self.metaKey} || alt:{self.altKey}'
 
 
-class MouseAction:
+class MouseEvent:
     '''
         self.cnt counter, bmak.me_cnt
         self.typee 1 mouse move, 2 mouse click, 3 mouse down, 4 mouse up
@@ -325,7 +377,79 @@ class MouseAction:
                 return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}, sumChar={self.sumChar}'
             except:
                 return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}'
+
+
+class TouchEvent():
+    '''
+        TouchEvent
+    '''
+    def __init__(self, string: str):
+        if string[-2:] == ',0':
+            self.isTrusted = False
+            print('mouse event non trusted, check for problems')
+        else:
+            self.isTrusted = True
+        self.cnt, self.typee, self.time, self.x, self.y = string.split(',')[0:5]
+
+    def __str__(self):
+        return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}'
+
+class DeviceOrientationEvent:
+    '''
+        bmak.cdoa
+    '''
     
+    def __init__(self, string: str):
+        if string[-2:] == ',0':
+            self.isTrusted = False
+        else:
+            self.isTrusted = True
+
+        self.cnt, self.time, self.alpha, self.beta, self.gamma = string.split(',')[0:5]
+    
+    def __str__(self):
+        return f'cnt:{self.cnt}, time:{self.time}, alpha:{self.alpha}, beta:{self.beta}, gamma:{self.gamma}, isTrusted:{self.isTrusted}'
+
+class DeviceMotionEvent:
+    '''
+        bmak.cdma
+    '''
+    def __init__(self, string: str):
+        if string[-2:] == ',0':
+            self.isTrusted = False
+        else:
+            self.isTrusted = True 
+
+        self.cnt, self.time, self.accelerationX, self.accelerationY, self.accelerationZ, self.accelerationXGravity, \
+        self.accelerationYGravity, self.accelerationZGravity, self.rotationRateAlpha, self.rotationRateBeta, \
+        self.rotationRateGamma = string.split(',')[0:11]
+
+    def __str__(self):
+        return f'cnt:{self.cnt}, time:{self.time}, accelX:{self.accelerationX}, accelY:{self.accelerationY}, accelZ:{self.accelerationZ} \
+                accelXG:{self.accelerationXGravity}, accelYG:{self.accelerationYGravity}, accelZG:{self.accelerationZGravity}, \
+                    rotaA:{self.rotationRateAlpha}, rotaB:{self.rotationRateBeta}, rogaG:{self.rotationRateGamma}'
+
+class PointerEvent:
+    '''
+        bmak.cpa
+
+        self.cnt counter, bmak.me_cnt
+        self.typee  3 pointer down, 4 pointer up
+        self.time time between now and start
+        self.x if defined e.pageX otherwise e.clientX, i think always definied so always pageX
+        self.y if defined e.pageY otherwise e.clientY, i think always definied so always pageY
+    '''
+    def __init__(self, string: str):
+        if string[-2:] == ',0':
+            self.isTrusted = False
+        else:
+            self.isTrusted = True
+
+        self.cnt, self.typee, self.time, self.pageX, self.pageY = string.split(',')[0, 5]
+
+    def __str__(self):
+        return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}'
+
 if __name__ == '__main__':
     with open('sensorData//sensorData_acaso4.txt', 'r') as f:
         sensor_data = f.read()
