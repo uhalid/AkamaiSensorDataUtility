@@ -1,0 +1,217 @@
+Line 100 akamai.js
+bmak.pen = bmak.wen = bmak.den = 0
+bmak.pen  checks for PhantomJs, bmek.wen cheks for Selenium, and bmek.den checks for Chromium based  automation 
+
+
+cdma:
+Called, at most 10 times (dme_cnt) and as little as 2 times (dma_throttole), by an EventListener on event devicemotion  (indicates the amount  of phisical force of  accelaration)
+accelerationIncludingGravity    g-force. In practice, this value represents the raw data measured by an accelerometer
+acceleration                    property returns the amount of acceleration recorded by the device, in meters per second squared (m/s²)
+rotationRate                    Returns the rate at which the device is rotating around each of its axes in degrees per second.
+
+cdma: function (t) {
+            try {
+                if (bmak.dme_cnt < bmak.dme_cnt_lmt && bmak.dma_throttle < 2 && t) {
+                    var a = currentTime - timeAtTheStartOfTheTask,
+                        e = -1,
+                        n = -1,
+                        o = -1;
+                    t.acceleration && (e = bmak.getFloatVal(t.acceleration.x), n = bmak.getFloatVal(t.acceleration.y), o = bmak.getFloatVal(t.acceleration.z));
+                    var m = -1,
+                        r = -1,
+                        i = -1;
+                    t.accelerationIncludingGravity && (m = bmak.getFloatVal(t.accelerationIncludingGravity.x), r = bmak.getFloatVal(t.accelerationIncludingGravity.y), i = bmak.getFloatVal(t.accelerationIncludingGravity.z));
+                    var c = -1,
+                        b = -1,
+                        d = 1;
+                    t.rotationRate && (c = bmak.getFloatVal(t.rotationRate.alpha), b = bmak.getFloatVal(t.rotationRate.beta), d = bmak.getFloatVal(t.rotationRate.gamma));
+                    var s = bmak.dme_cnt + ',' + a + ',' + e + ',' + n + ',' + o + ',' + m + ',' + r + ',' + i + ',' + c + ',' + b + ',' + d;
+                    if (0 !== t.isTrusted && !1 === t.isTrusted){
+                        (s += ',0');
+                        bmak.dmact = bmak.dmact + s + ';', bmak.ta += a, bmak.dme_vel = bmak.dme_vel + bmak.dme_cnt + a, bmak.dme_cnt++
+                    }
+                }
+                bmak.js_post && bmak.dme_cnt > 1 && bmak.aj_indx_dmact < bmak.aj_lmt_dmact && (bmak.aj_type = 7, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_dmact++), bmak.dma_throttle++
+            } catch (t) {}
+        }
+
+
+dme_cnt = 0
+dme_cnt limit = 10
+dma.throttle = 0
+
+
+dma: function (t) {
+            try {
+                if (0 < 10 && 0 < 2 && t) {
+
+                    var a = bmak.get_cf_date() - bmak.start_t,
+                        e = -1,
+                        n = -1,
+                        o = -1;
+                    t.acceleration && (e = bmak.getFloatVal(t.acceleration.x), n = bmak.getFloatVal(t.acceleration.y), o = bmak.getFloatVal(t.acceleration.z));
+                    var m = -1,
+                        r = -1,
+                        i = -1;
+                    t.accelerationIncludingGravity && (m = bmak.getFloatVal(t.accelerationIncludingGravity.x), r = bmak.getFloatVal(t.accelerationIncludingGravity.y), i = bmak.getFloatVal(t.accelerationIncludingGravity.z));
+                    var c = -1,
+                        b = -1,
+                        d = 1;
+                    t.rotationRate && (c = bmak.getFloatVal(t.rotationRate.alpha), b = bmak.getFloatVal(t.rotationRate.beta), d = bmak.getFloatVal(t.rotationRate.gamma));
+                    var s = bmak.dme_cnt + ',' + a + ',' + e + ',' + n + ',' + o + ',' + m + ',' + r + ',' + i + ',' + c + ',' + b + ',' + d;
+                    void 0 !== t.isTrusted && !1 === t.isTrusted && (s += ',0'), bmak.dmact = bmak.dmact + s + ';', bmak.ta += a, bmak.dme_vel = bmak.dme_vel + bmak.dme_cnt + a, bmak.dme_cnt++
+                }
+                bmak.js_post && bmak.dme_cnt > 1 && bmak.aj_indx_dmact < bmak.aj_lmt_dmact && (bmak.aj_type = 7, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_dmact++), bmak.dma_throttle++
+            } catch (t) {}
+        }
+
+
+
+
+
+bmak.start_ts = Date.now ? Date.now() : +new Date, bmak.kact = '', bmak.ke_cnt = 0, bmak.ke_vel = 0, bmak.mact = '', bmak.mme_cnt = 0, bmak.mduce_cnt = 0, bmak.me_vel = 0, bmak.pact = '', bmak.pme_cnt = 0, bmak.pduce_cnt = 0, bmak.pe_vel = 0, bmak.tact = '', bmak.tme_cnt = 0, bmak.tduce_cnt = 0, bmak.te_vel = 0, bmak.doact = '', bmak.doe_cnt = 0, bmak.doe_vel = 0, bmak.dmact = '', bmak.dme_cnt = 0, bmak.dme_vel = 0, bmak.vcact = '', bmak.vc_cnt = 0, bmak.aj_indx = 0, bmak.aj_ss = 0, bmak.aj_type = -1, bmak.aj_indx_doact = 0, bmak.aj_indx_dmact = 0, bmak.aj_indx_tact = 0, bmak.me_cnt = 0, bmak.pe_cnt = 0, bmak.te_cnt = 0, bmak.nav_perm = '', bmak.brv = 0, bmak.hbCalc = !1, bmak.fmh = '', bmak.fmz = '', bmak.ssh = '', bmak.wv = '', bmak.wr = '', bmak.weh = '', bmak.wl = 0
+
+
+
+        dme_cnt = 0
+
+
+
+Stuff online  i found:
+    - https://grantwinney.com/websites-requesting-access-to-motion-sensors/
+    - https://www.npmjs.com/package/abck
+    - https://onecompiler.com/javascript/3wqmxfuf9
+
+dis = dismiss
+en = enter
+        
+    bmak = {
+        get_telemetry: function () {
+                return bmak.bpd(), bmak.ir(), bmak.sensor_data
+        },
+    
+        bpd: function () {
+            bmak.sd_debug('<bpd>');
+            var t = 0;
+            try {
+                t = bmak.get_cf_date();
+                var a = bmak.updatet(),
+                    e = '3';
+                bmak.ckie && (e = bmak.get_cookie());
+                var n = bmak.gd(),
+
+                    o = window.DeviceOrientationEvent ? 'do_en' : 'do_dis',
+                    m = window.DeviceMotionEvent ? 'dm_en' : 'dm_dis',
+                    r = window.TouchEvent ? 't_en' : 't_dis',
+                    i = o + ',' + m + ',' + r,
+                    c = bmak.getforminfo(),
+                    b = bmak.getdurl(),
+                    d = bmak.aj_type + ',' + bmak.aj_indx;
+                !bmak.fpcf.fpValCalculated && (0 == bmak.js_post || bmak.aj_indx > 0) && bmak.fpcf.fpVal();
+                var s = bmak.ke_vel + bmak.me_vel + bmak.doe_vel + bmak.dme_vel + bmak.te_vel + bmak.pe_vel,
+                    k = bmak.ff,
+                    l = k(80) + k(105) + k(90) + k(116) + k(69),
+                    u = bmak.jrs(bmak.start_ts),
+                    _ = bmak.get_cf_date() - bmak.start_ts,
+                    f = bmak.pi(bmak.d2 / 6),
+                    p = bmak.fas(),
+                    v = bmak.hbs(),
+                    h = bmak.gwd(),
+                    g = [bmak.ke_vel + 1, bmak.me_vel + 32, bmak.te_vel + 32, bmak.doe_vel, bmak.dme_vel, bmak.pe_vel, s, a, bmak.init_time, bmak.start_ts, bmak.fpcf.td, bmak.d2, bmak.ke_cnt, bmak.me_cnt, f, bmak.pe_cnt, bmak.te_cnt, _, bmak.ta, bmak.n_ck, e, bmak.ab(e), bmak.fpcf.rVal, bmak.fpcf.rCFP, p, l, u[0], u[1], v, h],
+                    w = g.join(','),
+                    y = '' + bmak.ab(bmak.fpcf.fpValstr);
+                bmak.firstLoad ? bmak.np() : bmak.csh(), !bmak.hbCalc && (0 == bmak.js_post || bmak.aj_indx > 0) && (bmak.fm(), bmak.wgl(), bmak.hbCalc = !0);
+                var E = '';
+                bmak.hbCalc && (E = bmak.fmh + ',' + bmak.fmz + ',' + bmak.ssh + ',' + bmak.wv + ',' + bmak.wr + ',' + bmak.weh + ',' + bmak.wl);
+                var S = bmak.sed(),
+                    C = bmak.mn_get_current_challenges(),
+                    B = '',
+                    x = '',
+                    M = '';
+                if (void 0 !== C[1]) {
+                    var j = C[1];
+                    void 0 !== bmak.mn_r[j] && (B = bmak.mn_r[j])
+                }
+                if (void 0 !== C[2]) {
+                    var A = C[2];
+                    void 0 !== bmak.mn_r[A] && (x = bmak.mn_r[A])
+                }
+                if (void 0 !== C[3]) {
+                    var L = C[3];
+                    void 0 !== bmak.mn_r[L] && (M = bmak.mn_r[L])
+                }
+                bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + n + '-1,2,-94,-101,' + i + '-1,2,-94,-105,' + bmak.informinfo + '-1,2,-94,-102,' + c + '-1,2,-94,-108,' + bmak.kact + '-1,2,-94,-110,' + bmak.mact + '-1,2,-94,-117,' + bmak.tact + '-1,2,-94,-111,' + bmak.doact + '-1,2,-94,-109,' + bmak.dmact + '-1,2,-94,-114,' + bmak.pact + '-1,2,-94,-103,' + bmak.vcact + '-1,2,-94,-112,' + b + '-1,2,-94,-115,' + w + '-1,2,-94,-106,' + d, bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-119,' + bmak.mr + '-1,2,-94,-122,' + S + '-1,2,-94,-123,' + B + '-1,2,-94,-124,' + x + '-1,2,-94,-126,' + M + '-1,2,-94,-127,' + bmak.nav_perm;
+                var P = 24 ^ bmak.ab(bmak.sensor_data);
+                bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-70,' + bmak.fpcf.fpValstr + '-1,2,-94,-80,' + y + '-1,2,-94,-116,' + bmak.o9 + '-1,2,-94,-118,' + P + '-1,2,-94,-129,' + E + '-1,2,-94,-121,', bmak.sd_debug(',s1:' + bmak.sensor_data.slice(0, 10))
+            } catch (t) {
+                var T = '';
+                try {
+                    t.stack && 'string' == typeof t.stack ? T = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (T = t.replace(/\"/g, "\\'")), T = T.slice(0, 1e3), bmak.sd_debug(',s2:' + T), bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + bmak.uar() + '-1,2,-94,-120,' + T
+                } catch (t) {
+                    t.stack && 'string' == typeof t.stack ? T = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (T = t.replace(/\"/g, "\\'")), T = T.slice(0, 1e3), bmak.sd_debug(',s3:' + T), bmak.sensor_data = bmak.ver + bmak.sensor_data + ',s3:' + T
+                }
+            }
+            try {
+                var F = bmak.od(bmak.cs, bmak.api_public_key).slice(0, 16),
+                    D = Math.floor(bmak.get_cf_date() / 36e5),
+                    R = bmak.get_cf_date(),
+                    N = F + bmak.od(D, F) + bmak.sensor_data;
+                bmak.sensor_data = N + ';' + (bmak.get_cf_date() - t) + ';' + bmak.tst + ';' + (bmak.get_cf_date() - R)
+            } catch (t) {}
+            bmak.sd_debug('</bpd>')
+        },
+
+
+        gd: function () {
+                var t = bmak.uar(),
+                    a = '' + bmak.ab(t),
+                    e = bmak.start_ts / 2,
+                    n = -1,
+                    o = -1,
+                    m = -1,
+                    r = -1,
+                    i = -1,
+                    c = -1,
+                    b = -1;
+                try {
+                    n = window.screen ? window.screen.availWidth : -1
+                } catch (t) {
+                    n = -1
+                }
+                try {
+                    o = window.screen ? window.screen.availHeight : -1
+                } catch (t) {
+                    o = -1
+                }
+                try {
+                    m = window.screen ? window.screen.width : -1
+                } catch (t) {
+                    m = -1
+                }
+                try {
+                    r = window.screen ? window.screen.height : -1
+                } catch (t) {
+                    r = -1
+                }
+                try {
+                    i = window.innerHeight || (document.body && 'clientHeight' in document.body ? document.body.clientHeight : document.documentElement && 'clientHeight' in document.documentElement ? document.documentElement.clientHeight : -1)
+                } catch (t) {
+                    i = -1
+                }
+                try {
+                    c = window.innerWidth || (document.body && 'clientWidth' in document.body ? document.body.clientWidth : document.documentElement && 'clientWidth' in document.documentElement ? document.documentElement.clientWidth : -1)
+                } catch (t) {
+                    c = -1
+                }
+                try {
+                    b = 'outerWidth' in window && void 0 !== window.outerWidth ? window.outerWidth : -1
+                } catch (t) {
+                    b = -1
+                }
+                bmak.z1 = bmak.pi(bmak.start_ts / (bmak.y1 * bmak.y1));
+                var d = Math.random(),
+                    s = bmak.pi(1e3 * d / 2),
+                    k = d + '';
+                return k = k.slice(0, 11) + s, bmak.gbrv(), bmak.get_browser(), bmak.bc(), bmak.bmisc(), t + ',uaend,' + bmak.xagg + ',' + bmak.psub + ',' + bmak.lang + ',' + bmak.prod + ',' + bmak.plen + ',' + bmak.pen + ',' + bmak.wen + ',' + bmak.den + ',' + bmak.z1 + ',' + bmak.d3 + ',' + n + ',' + o + ',' + m + ',' + r + ',' + c + ',' + i + ',' + b + ',' + bmak.bd() + ',' + a + ',' + k + ',' + e + ',' + bmak.brv + ',loc:' + bmak.loc
+        }
+    }

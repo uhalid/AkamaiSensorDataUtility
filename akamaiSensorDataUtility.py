@@ -1,5 +1,6 @@
 import time
 
+
 class SensorDataGenerator:
 
     def __init__(self, protocol='https://', hostname='www.nike.com"', api_public_key='afSbep8yjnZUjq3aL010jO15Sawj2VZfdYK8uY90uxq'):
@@ -96,8 +97,6 @@ class SensorDataGenerator:
         self.loap = 1
         self.dcs = 0
 
-
-
     def get_cf_date(self):
         '''
         returns unix time
@@ -122,44 +121,49 @@ class SensorDataGenerator:
 
 
 class SensorDataDecoder:
-    def __init__(self, sensor_data: str, ver = '1.7'):
+    def __init__(self, sensor_data: str, ver='1.7'):
         self.sensor_data = sensor_data
         self.ver = ver
         self.decode()
-    
+
     def testAB(self, string):
         if(string == None):
             return -1
         if type(string) != str:
             return -2
-        
+
         a = 0
         for char in string:
             a += ord(char)
-        return a    
-        
+        return a
 
     def decodeGD(self, n):
         self.useragent, resto = n.split(',uaend,')
 
         self.xagg, self.psub, self.lang, self.prod, self.plen, self.pen, self.wen, self.den, self.z1, self.d3, self.availWidth, self.availHeight, self.width, self.height, self.innerWidth, self.innerHeight, self.outerWidth, \
-        _, self.cpen, self.i1, self.dm, self.cwen, self.non, self.opc, self.fc, self.sc, self.wrc, self.isc, self.vib, self.bat, self.x11, self.x12, self.sumCharUA, self.k, self.halfStart, self.brv, self.loc = resto.split(',')
+        _, self.cpen, self.i1, self.dm, self.cwen, self.non, self.opc, self.fc, self.sc, self.wrc, self.isc, self.vib, self.bat, self.x11, self.x12, self.sumCharUA, self.k, self.halfStart, self.brv, self.loc = resto.split(
+            ',')
 
         if(self.testAB(self.useragent) != int(self.sumCharUA)):
             raise Exception("checksum error, bmak func: ab")
-        
 
     def decodeFormInfo(self, string: str):
         infos = string.split(';')[0:-1]
         self.allFormInfo = []
-        cnt = 0
         for info in infos:
             a = FormInfo(info)
             self.allFormInfo.append(a)
 
     def decodeKact(self, string: str):
-            pass
+        infos = string.split(';')[0:-1]
+        self.allKeyboardInfo = []
 
+        for info in infos:
+            a = KeyboardAction(info)
+            self.allKeyboardInfo.append(a)
+            with open('resto2.txt', 'a+') as f:
+                f.write(a.__str__() + '\n')
+                exit
     def decode(self):
         roba, resto = self.sensor_data.split('-1,2,-94,-100,')
         #! da sistemare roba piu avanti
@@ -219,23 +223,31 @@ class KeyboardAction:
     '''
         self.cnt counter, indicates how many keys have been pressed so far
         self.type, the method that logs keyboard action (cka) is called by 3 possibile Events, keyboardDown, keyboardUp, keyboardPress each one has a code respectively 1, 2, 3
-
+        self.time time between current time and bmak.start_ts, bmak.start_ts is inizialized at the start
+        self.n value based on the key you have pressed, -2 if (it's called by keyboard press && keycode >= 32 && <=126), -3 if(n >= 33 && n <= 47 and called by keyboarddown or keyup), -4 if(n >= 122 && n <= 123) all other cases -2
+        self.l
         self.specialKeys indicites if shift, ctrl, meta or alt key are pressed, formula =
-        self.sumCharName same thing as FormInfo.sumCharName, bmak.ab is called with the name of input box where the character have been typed and
+        self.sumChar bmak.ab is called with the name of input box where the character have been typed, if name is not defined it's bmak.ab is called with the paramam id instead of name, -1 if no active element or name and id not defined
 
-        Know sumCharName:
+        Know sumChar of name:
                 emailAddress: 1230
                 password: 883
                 pid: 312 
+                search: 630
+        
+        notes: 
+            - they check by event.isTrusted() if the event is genereted by a script or not
+                if it's genereted by script it appends '0,' at the end
     '''
 
-    def __init__(self, cnt, typee, _, a, specialKeys, sumCharName):
-        self.cnt = cnt
-        self.typee = typee
-        # s
-        # n
-        self.specialKeys = specialKeys
-        self.sumCharName = sumCharName
+    def __init__(self, string: str):
+        if string[-2:] == ',0':
+            print('keyboard event genereted by script, problem???')
+            self.cnt, self.typee, self.time, self.n, self.l, self.specialKeys, self.sumChar = string.split(',')[0:7]
+            self.isTrusted = False
+        else:
+            self.cnt, self.typee, self.time, self.n, self.l, self.specialKeys, self.sumChar = string.split(',')
+            self.isTrusted = True
 
         self.whichSpecialKeyArePressed()
 
@@ -245,16 +257,15 @@ class KeyboardAction:
         # then they calculate a number by multiplying power of 2 by the variables
         # 8 * shiftkey + 4 * ctrlKey + 2 * metaKey + alt
 
-        binNum = bin(self.specialKeys)
-        binList = [char for char in str(binNum).zfill(4)]
-
+        binNum = int(self.specialKeys)
+        binList = [char for char in format(binNum, 'b').zfill(4)]
         self.shiftKey = True if binList[0] == '1' else False 
         self.ctrlKey = True if binList[1] == '1' else False
         self.metaKey = True if binList[2] == '1' else False
         self.altKey = True if binList[3] == '1' else False
     
-    def __str__(self):
-        return f'Keyboard    cnt:{self.cnt} || typee:{self.typee} || specialKeys:{self.specialKeys} || sumCharName:{self.sumCharName} || shift:{self.shiftKey} || ctrl:{self.ctrlKey} || meta:{self.metaKey} || alt:{self.altKey}'
+    def __str__(self) -> str:
+        return f'Keyboard    isT:{self.isTrusted}|| cnt:{self.cnt} || typee:{self.typee} || time:{self.time} || n:{self.n} || l:{self.l} || specialKeys:{self.specialKeys} || sumChar:{self.sumChar} || shift:{self.shiftKey} || ctrl:{self.ctrlKey} || meta:{self.metaKey} || alt:{self.altKey}'
 
 if __name__ == '__main__':
     with open('sensorData//sensorData_acaso4.txt', 'r') as f:

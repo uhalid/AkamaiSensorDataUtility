@@ -482,11 +482,13 @@ var _cf = _cf || [],
         },
         cka: function (t, a) {
             try {
-                var e = t || window.event,
+                var e = t || window.edown
+vent,
                 
                     n = -1,
                     o = 1;
                 if (bmak.ke_cnt < bmak.ke_cnt_lmt && e) {
+                    // On chrome keycode is the ascii value and charCode is 0
                     n = e.keyCode;
                     var m = e.charCode,
                         r = e.shiftKey ? 1 : 0,
@@ -497,10 +499,60 @@ var _cf = _cf || [],
                         s = bmak.get_cf_date() - bmak.start_ts,
                         k = bmak.gf(null),
                         l = 0;
+
+                    console.log(`keycode:${e.keyCode}, charCode:${e.charCode}, r:${e.shiftKey}, i:${e.ctrlKey}, c:${e.metaKey}, b:${e.altKey}, k:${bmak.gf(null)}, s:${bmak.get_cf_date() - bmak.start_ts}`);
                     //! Check which one is not null(n, m) and assign that to N
+                    // charcode is 0 so it doesn't enter here
+                    if(m && n){
+                        // (n = 0 != m && 0 != n && m != n ? -1 : 0 != n ? n : m)
+                        if( 0 != m && 0 != n && m != n)
+                            n = -1
+                        else if( 0 != n)
+                            n = n
+                        else
+                            n = m   
+                    }
+                    // if Ctrl, meta and alt keys are not pressed 
+                    if(0 == i && 0 == c && 0 == b && n >= 32 ){
+                        //  0 == i && 0 == c && 0 == b && n >= 32 && (n = 3 == a && n >= 32 && n <= 126 ? -2 : n >= 33 && n <= 47 ? -3 : n >= 112 && n <= 123 ? -4 : -2),
+                        
+                        // if its called by Event keyboardPress
+                        if(3 == a && n >= 32 && n <= 126)
+                            n = -2
+                        // special char 
+                        else if(n >= 33 && n <= 47)
+                            n = -3
+                        // letters between p to {
+                        else if(n >= 112 && n <= 123)
+                            n = -4
+                        // n > 47 && n < 112 
+                        else
+                            n = -2
+                    }
+                    // k != bmak.prevfid ? (bmak.fidcnt = 0, bmak.prevfid = k) : bmak.fidcnt = bmak.fidcnt + 1;
+
+                    if (k != bmak.prevfid){
+                        bmak.fidcnt = 0
+                        bmak.prevfid = k
+                    }
+                    else{
+                        bmak.fidcnt = bmak.fidcnt + 1ß
+                    }
                     m && n && (n = 0 != m && 0 != n && m != n ? -1 : 0 != n ? n : m), 0 == i && 0 == c && 0 == b && n >= 32 && (n = 3 == a && n >= 32 && n <= 126 ? -2 : n >= 33 && n <= 47 ? -3 : n >= 112 && n <= 123 ? -4 : -2), k != bmak.prevfid ? (bmak.fidcnt = 0, bmak.prevfid = k) : bmak.fidcnt = bmak.fidcnt + 1;
+                    
+                    // checks if there is an active element
                     if (0 == bmak.isIgn(n)) {
+
                         var u = bmak.ke_cnt + ',' + a + ',' + s + ',' + n + ',' + l + ',' + d + ',' + k;
+                        // if the event is genereted by script append ,0
+                        if (0 !== e.isTrusted && !1 === e.isTrusted){
+                            u += ',0'
+                        }
+                        u += ';'
+                        bmak.kact = bmak.kact + u
+                        bmak.ke_vel = bmak.ke_vel + bmak.ke_cnt + a + s + n + d + k;
+                        bmak.ta += s;
+
                         void 0 !== e.isTrusted && !1 === e.isTrusted && (u += ',0'), u += ';', bmak.kact = bmak.kact + u, bmak.ke_vel = bmak.ke_vel + bmak.ke_cnt + a + s + n + d + k, bmak.ta += s
                     } else o = 0
                 }
