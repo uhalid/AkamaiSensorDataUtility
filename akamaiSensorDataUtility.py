@@ -172,8 +172,10 @@ class SensorDataDecoder:
             f.write('')
         for info in infos:
             with open('resto_mouse.txt', 'a+') as f:
-
-                f.write(str(info) + '\n')
+                m = MouseAction(info)
+                self.allMouseInfo.append(m)
+                # f.write(info.replace(',', '\t\t') + '\n')
+                f.write(str(m) + '\n')
 
     def decode(self):
         roba, resto = self.sensor_data.split('-1,2,-94,-100,')
@@ -270,7 +272,6 @@ class KeyboardAction:
         # then they calculate a number by multiplying power of 2 by the variables
         # 8 * shiftkey + 4 * ctrlKey + 2 * metaKey + alt
 
-
         binNum = int(self.specialKeys)
         binList = [char for char in format(binNum, 'b').zfill(4)]
         self.shiftKey = True if binList[0] == '1' else False 
@@ -281,6 +282,50 @@ class KeyboardAction:
     def __str__(self) -> str:
         return f'Keyboard    isT:{self.isTrusted}|| cnt:{self.cnt} || typee:{self.typee} || time:{self.time} || n:{self.n} || l:{self.l} || specialKeys:{self.specialKeys} || sumChar:{self.sumChar} || shift:{self.shiftKey} || ctrl:{self.ctrlKey} || meta:{self.metaKey} || alt:{self.altKey}'
 
+
+class MouseAction:
+    '''
+        self.cnt counter, bmak.me_cnt
+        self.typee 1 mouse move, 2 mouse click, 3 mouse down, 4 mouse up
+        self.time time between now and start
+        self.x if defined e.pageX otherwise e.clientX, i think always definied so always pageX
+        self.y if defined e.pageY otherwise e.clientY, i think always definied so always pageY
+
+
+        stuff:
+            - For mouse movement it tracks only first 100 movement, bmak.mme_cnt_lmt MouseMovementEvent
+            - for click, down, and up it tracks first 75 vmak.mduce_cnt_lmt MouseDownUpClickEvent
+            - bmak.me_cnt counts EVERY event MouseEvent
+            - bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + otherwise
+            - bmak.ta += i
+
+    
+    '''
+    def __init__(self, string: str):
+        
+        if string[-4:] == ',it0':
+            print('mousee event genereted by script, problem???')
+            self.isTrusted = False 
+        else:
+            self.isTrusted = True
+
+        infos = string.split(',')
+        self.cnt, self.typee, self.time, self.x, self.y = infos[0:5]
+        
+        if self.typee != '1':
+            self.sumChar = infos[5]
+            if len(infos) > 6:
+                self.button = infos[6]
+
+    def __str__(self):
+        try:
+            return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}, sumChar={self.sumChar}, button={self.button}'
+        except:
+            try:
+                return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}, sumChar={self.sumChar}'
+            except:
+                return f'cnt:{self.cnt}, typee:{self.typee}, time={self.time}, x={self.x}, y={self.y}, isTrusted={self.isTrusted}'
+    
 if __name__ == '__main__':
     with open('sensorData//sensorData_acaso4.txt', 'r') as f:
         sensor_data = f.read()
