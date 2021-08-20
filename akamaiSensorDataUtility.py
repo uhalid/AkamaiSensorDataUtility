@@ -161,9 +161,20 @@ class SensorDataDecoder:
         for info in infos:
             a = KeyboardAction(info)
             self.allKeyboardInfo.append(a)
-            with open('resto2.txt', 'a+') as f:
-                f.write(a.__str__() + '\n')
-                exit
+            # with open('resto2.txt', 'a+') as f:
+            #     f.write(str(a() + '\n')
+        
+    def decodeMact(self, string: str):
+        infos = string.split(';')[0:-1]
+        self.allMouseInfo = []
+
+        with open('resto_mouse.txt', 'w') as f:
+            f.write('')
+        for info in infos:
+            with open('resto_mouse.txt', 'a+') as f:
+
+                f.write(str(info) + '\n')
+
     def decode(self):
         roba, resto = self.sensor_data.split('-1,2,-94,-100,')
         #! da sistemare roba piu avanti
@@ -185,6 +196,8 @@ class SensorDataDecoder:
         kact, resto = resto.split('-1,2,-94,-110,')
         self.decodeKact(kact)
 
+        mact, resto = resto.split('-1,2,-94,-117,')
+        self.decodeMact(mact)
 
         with open('resto.txt', 'w') as f:
             kact = kact.replace(';', '\n')
@@ -225,7 +238,7 @@ class KeyboardAction:
         self.type, the method that logs keyboard action (cka) is called by 3 possibile Events, keyboardDown, keyboardUp, keyboardPress each one has a code respectively 1, 2, 3
         self.time time between current time and bmak.start_ts, bmak.start_ts is inizialized at the start
         self.n value based on the key you have pressed, -2 if (it's called by keyboard press && keycode >= 32 && <=126), -3 if(n >= 33 && n <= 47 and called by keyboarddown or keyup), -4 if(n >= 122 && n <= 123) all other cases -2
-        self.l
+        self.l always 0
         self.specialKeys indicites if shift, ctrl, meta or alt key are pressed, formula =
         self.sumChar bmak.ab is called with the name of input box where the character have been typed, if name is not defined it's bmak.ab is called with the paramam id instead of name, -1 if no active element or name and id not defined
 
