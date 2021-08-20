@@ -270,6 +270,7 @@ class KeyboardAction:
         # then they calculate a number by multiplying power of 2 by the variables
         # 8 * shiftkey + 4 * ctrlKey + 2 * metaKey + alt
 
+
         binNum = int(self.specialKeys)
         binList = [char for char in format(binNum, 'b').zfill(4)]
         self.shiftKey = True if binList[0] == '1' else False 
