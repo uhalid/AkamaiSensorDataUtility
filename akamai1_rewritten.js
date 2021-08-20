@@ -302,7 +302,7 @@ var _cf = _cf || [],
                         i = bmak.get_cf_date() - bmak.start_ts,
                         c = bmak.me_cnt + ',' + a + ',' + i + ',' + n + ',' + o;
 
-                    // if it's not a mouse mouse
+                    // if it's not a mouse movement
                     if (1 != a) {
                         // add where i clicked
                         c = c + ',' + r;
@@ -337,7 +337,7 @@ var _cf = _cf || [],
                 }
                 bmak.me_cnt += 1;
                 
-                if(bmak.js_post && 3 == a &&){
+                if(bmak.js_post && 3 == a){
                     bmak.aj_type = 1;
                     bmak.bpd();
                     bmak.pd(!0)
@@ -405,7 +405,7 @@ var _cf = _cf || [],
                         void 0 !== n.isTrusted && !1 === n.isTrusted && (i += ',0'), bmak.pe_vel = bmak.pe_vel + bmak.pe_cnt + a + r + o + m, bmak.pact = bmak.pact + i + ';', bmak.ta += r, 1 == a ? bmak.pme_cnt++ : bmak.pduce_cnt++
                     }
                 }
-                1 == a ? bmak.pme_cnt++ : bmak.pduce_cnt++, bmak.pe_cnt++, bmak.js_post && 3 == a && e && (bmak.aj_type = 2, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
+                1 == a ? bmpme_cnt++ : bmak.pduce_cnt++, bmak.pe_cnt++, bmak.js_post && 3 == a && e && (bmak.aj_type = 2, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
             } catch (t) { }
         },
         //! sum of  all ascii value of USER agent, IF the charValue is < 128
@@ -609,11 +609,31 @@ vent,
                     var e = t || window.event,
                         n = -1,
                         o = -1;
-                    e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+                    // e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+
+                    if (e && e.pageX && e.pageX) {
+                        n = Math.floor(e.pageX);
+                        o = Math.floor(e.pageY);
+                    } else if (e && e.clientX && e.clientY) {
+                        n = Math.floor(e.clientX);
+                        o = Math.floor(e.clientY);
+                    }
+                    
+                    
                     var m = bmak.get_cf_date() - bmak.start_ts,
                         r = bmak.te_cnt + ',' + a + ',' + m + ',' + n + ',' + o;
-                    void 0 !== e.isTrusted && !1 === e.isTrusted && (r += ',0'), bmak.tact = bmak.tact + r + ';', bmak.ta += m, bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o, bmak.doa_throttle = 0, bmak.dma_throttle = 0
+
+                    // void 0 !== e.isTrusted && !1 === e.isTrusted && (r += ',0'), bmak.tact = bmak.tact + r + ';', bmak.ta += m, bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o, bmak.doa_throttle = 0, bmak.dma_throttle = 0
+                    if (0 !== e.isTrusted && !1 === e.isTrusted){
+                        r += ',0'
+                    }
+                    bmak.tact = bmak.tact + r + ';'
+                    bmak.ta += m
+                    bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o
+                    bmak.doa_throttle = 0
+                    bmak.dma_throttle 
                 }
+
                 1 == a ? bmak.tme_cnt++ : bmak.tduce_cnt++, bmak.te_cnt++, bmak.js_post && 2 == a && bmak.aj_indx_tact < bmak.aj_lmt_tact && (bmak.aj_type = 5, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_tact++)
             } catch (t) { }
         },
