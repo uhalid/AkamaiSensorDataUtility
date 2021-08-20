@@ -279,26 +279,70 @@ var _cf = _cf || [],
             var r;
             return r = null != window.document.documentElement.getAttribute('selenium') ? '1' : '0', [t, a, e, n, o, m, r].join(',')
         },
-        cma: function (t, a) {
+        cma: function (t, a){
+            // a can be 1 mouse move, 2 mouse click, 3 mouse down, 4 mouse up
             try {
                 if (1 == a && bmak.mme_cnt < bmak.mme_cnt_lmt || 1 != a && bmak.mduce_cnt < bmak.mduce_cnt_lmt) {
                     var e = t || window.event,
                         n = -1,
                         o = -1;
-                    e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+                    
+                    // e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+
+                    if(e && e.pageX && e.pageX){
+                        n = Math.floor(e.pageX);
+                        o = Math.floor(e.pageY);
+                    }else if(e && e.clientX && e.clientY){
+                        n = Math.floor(e.clientX);
+                        o = Math.floor(e.clientY);
+                    }
                     var m = e.toElement;
                     null == m && (m = e.target);
                     var r = bmak.gf(m),
                         i = bmak.get_cf_date() - bmak.start_ts,
                         c = bmak.me_cnt + ',' + a + ',' + i + ',' + n + ',' + o;
+
+                    // if it's not a mouse mouse
                     if (1 != a) {
+                        // add where i clicked
                         c = c + ',' + r;
-                        var b = void 0 !== e.which ? e.which : e.button;
-                        null != b && 1 != b && (c = c + ',' + b)
+
+                        // var b = void 0 !== e.which ? e.which : e.button;
+                        if(0 !== e.which){
+                            b = e.which;
+                        }else{
+                            b = e.button;
+                        }
+                        
+                        // null != b && 1 != b && (c = c + ',' + b)
+                        if(null != b && 1!= b){
+                            c = c + ',' + b
+                        }
                     }
-                    void 0 !== e.isTrusted && !1 === e.isTrusted && (c += ',it0'), c += ';', bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o, bmak.mact = bmak.mact + c, bmak.ta += i
+
+                    // void 0 !== e.isTrusted && !1 === e.isTrusted && (c += ',it0'), c += ';', bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o, bmak.mact = bmak.mact + c, bmak.ta += i
+                    if(0 !== e.isTrusted && !1 === e.isTrusted){
+                        c += ',it0'
+                    }
+                    c += ';'
+                    bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o
+                    bmak.mact += c
+                    bmak.ta += i
+               }
+                // 1 == a ? bmak.mme_cnt++ : bmak.mduce_cnt++, bmak.me_cnt++, bmak.js_post && 3 == a && (bmak.aj_type = 1, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
+                if(1 == a){
+                    bmak.mme_cnt += 1;
+                }else{
+                    bmak.mduce_cnt += 1;
                 }
-                1 == a ? bmak.mme_cnt++ : bmak.mduce_cnt++, bmak.me_cnt++, bmak.js_post && 3 == a && (bmak.aj_type = 1, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
+                bmak.me_cnt += 1;
+                
+                if(bmak.js_post && 3 == a &&){
+                    bmak.aj_type = 1;
+                    bmak.bpd();
+                    bmak.pd(!0)
+                    bmak.ce_js_post = 1;
+                }
             } catch (t) { }
         },
         x2: function () {
@@ -707,15 +751,20 @@ vent,
         htc: function (t) {
             bmak.cta(t, 4)
         },
+
+        // mouse Movement
         hmm: function (t) {
             bmak.cma(t, 1)
         },
+        // mouse click
         hc: function (t) {
             bmak.cma(t, 2)
         },
+        // mouse down
         hmd: function (t) {
             bmak.cma(t, 3)
         },
+        // mouse up
         hmu: function (t) {
             bmak.cma(t, 4)
         },
