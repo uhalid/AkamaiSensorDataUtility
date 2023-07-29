@@ -1,7 +1,7 @@
 # AkamaiSensorDataUtility
 
-Just a fun project where i tried to reverse engineer Akamai. With the start of the university I had to stop the project.
-Notable Files:
-- akamai1.js the code that the browser executes
-- akamai1_rewritten.js the same code deobfuscated
-- akamaiSensorDataUtility.py the main program, takes in input the string that the browser send to akamai to check if the site is used by a bot or a human. the program attempts to reverse engineer that string. The string is composed of multiple informations each seperated by a string like "-1,2,-94,-103,". The program splits the string in it's individual information and decodes it.
+Just a fun project where i tried to reverse engineer Akamai. However, due to the commencement of my university studies, I was compelled to halt the project. Some noteworthy files involved in the project include:
+
+akamai1.js: This is the original code executed by the browser.
+akamai1_rewritten.js: This file contains the deobfuscated version of the original code.
+akamaiSensorDataUtility.py: Serving as the main program, it accepts as input the string that the browser sends to Akamai to distinguish between bot and human interactions with the site. The program tries to reverse engineer this string. The string consists of multiple pieces of information, each partitioned by a sequence like "-1,2,-94,-103,". The program segments the string into its discrete components and deciphers them
